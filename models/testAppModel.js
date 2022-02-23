@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 
 
 const userSchema = new mongoose.Schema({
@@ -13,7 +14,17 @@ const userSchema = new mongoose.Schema({
     },
 })
 
-export default mongoose.model('User',userSchema)
+userSchema.pre('save', function (next) {
+    if (this.password) {
+        console.log(this.password)
+        const salt = bcrypt.genSaltSync(10)
+        this.password = bcrypt.hashSync(this.password, salt)
+    }
+    next()
+})
+
+
+export default mongoose.model('User', userSchema);
 
 
 

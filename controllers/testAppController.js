@@ -3,26 +3,28 @@ import bcrypt from 'bcrypt';
 
 class TestAppController {
     
-    
-    // create new user with bcrypt
+    // create new user
     async createUser (req, res) {
         try {
-            const body = req.body
-            const user = new User(body);
-            const salt = await bcrypt.genSalt(10);
-            user.password = await bcrypt.hash(user.password, salt);
-            user.save().then((doc) => res.status(201).send(doc));
+            const { email, password } = req.body;
+            const user = await User.create({email, password})
             res.json(user)
         } catch (err) {
             res.status(500).json(err)
         }
-    }
+  }
+  
     // // create new user
     // async createUser (req, res) {
-    //     try {
-    //         const { email, password } = req.body;
-    //         const user = await User.create({email, password})
-    //         res.json(user)
+    //   try {
+    //     const { email, password } = req.body;
+    //     const saltRounds = 10;
+    //     const hashedPassword = await bcrypt.hash(password, saltRounds)
+    //     const user = await User.create({
+    //       email: email,
+    //       password: hashedPassword,
+    //     });
+    //     res.json(user)
     //     } catch (err) {
     //         res.status(500).json(err)
     //     }
@@ -69,10 +71,10 @@ class TestAppController {
 
 
     // update user
-    async updateUser (req, res) {
+  async updateUser (req, res) {
         try {
-            const user = req.body;
-            if (!user._id) {
+          const user = req.body;
+          if (!user._id) {
                 res.status(400).json({message: 'no id'})
             }
             const updatedUser = await User.findByIdAndUpdate(user._id, user, {new: true});
@@ -80,8 +82,7 @@ class TestAppController {
         } catch (err) {
             res.status(500).json(err)
         }
-    }
+  }
 }
-
 
 export default new TestAppController();
