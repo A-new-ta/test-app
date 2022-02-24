@@ -4,31 +4,31 @@ import bcrypt from 'bcrypt';
 class TestAppController {
     
     // create new user
+//     async createUser (req, res) {
+//         try {
+//             const { email, password } = req.body;
+//             const user = await User.create({email, password})
+//             res.json(user)
+//         } catch (err) {
+//             res.status(500).json(err)
+//         }
+//   }
+  
+    // create new user
     async createUser (req, res) {
-        try {
-            const { email, password } = req.body;
-            const user = await User.create({email, password})
-            res.json(user)
+      try {
+        const { email, password } = req.body;
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds)
+        const user = await User.create({
+          email: email,
+          password: hashedPassword,
+        });
+        res.json(user)
         } catch (err) {
             res.status(500).json(err)
         }
-  }
-  
-    // // create new user
-    // async createUser (req, res) {
-    //   try {
-    //     const { email, password } = req.body;
-    //     const saltRounds = 10;
-    //     const hashedPassword = await bcrypt.hash(password, saltRounds)
-    //     const user = await User.create({
-    //       email: email,
-    //       password: hashedPassword,
-    //     });
-    //     res.json(user)
-    //     } catch (err) {
-    //         res.status(500).json(err)
-    //     }
-    // }
+    }
 
     //find all users
     async getAll (req, res) {
@@ -73,7 +73,11 @@ class TestAppController {
     // update user
   async updateUser (req, res) {
         try {
-          const user = req.body;
+            const user = req.body;
+            const saltRounds = 10;
+            const hashedPassword = await bcrypt.hash(user.password, saltRounds);
+            user.password = hashedPassword;
+            
           if (!user._id) {
                 res.status(400).json({message: 'no id'})
             }
@@ -86,3 +90,4 @@ class TestAppController {
 }
 
 export default new TestAppController();
+
