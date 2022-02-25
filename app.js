@@ -1,15 +1,15 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import router from './routes/testAppRoute.js';
+import userRouter from './routes/userRoter.js';
 
 const PORT = 3000;
 const URL = "mongodb://localhost:27017/usersdb";
 const app = express();
 
-mongoose.connect("mongodb://localhost:27017/usersdb", { useUnifiedTopology: true, useNewUrlParser: true });
+mongoose.connect(URL, { useUnifiedTopology: true, useNewUrlParser: true });
 
 app.use(express.json());
-app.use('/users', router);
+app.use('/api', userRouter);
 
 async function start() {
     try {
